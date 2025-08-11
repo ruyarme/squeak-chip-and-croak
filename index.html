@@ -20,6 +20,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
+    // Player Object
     let player = {
       x: 100,
       y: 100,
@@ -28,7 +29,6 @@
       color: 'gray',  // Default color for Squeak
       speed: 5,
       name: "Squeak",  // Starting character
-      facts: [],
     };
 
     // Science facts
@@ -41,7 +41,7 @@
 
     // Variables to control the scrolling speed and positioning of the fact
     let factYPosition = canvas.height - 50;  // Initial position of the fact
-    let factSpeed = 1;  // How fast the fact scrolls up
+    let factSpeed = 0.2;  // Slower speed for better readability
 
     // Display science facts that stay on the screen for longer
     function displayFact(fact) {
@@ -101,17 +101,18 @@
       setCharacterAppearance();  // Update the player's appearance
     });
 
-    // Create obstacles (randomly positioned)
+    // Obstacles Code
     let obstacles = [];
 
+    // Function to create obstacles (appear randomly from the top)
     function createObstacle() {
       let obstacle = {
-        x: canvas.width,
-        y: canvas.height - 100,  // Position the obstacle near the ground
+        x: Math.random() * canvas.width,  // Random horizontal position
+        y: 0,  // Start from the top
         width: 50,
         height: 50,
         color: 'red',
-        speed: 3  // Obstacle moves from right to left
+        speed: 2  // Obstacles fall down at this speed
       };
       obstacles.push(obstacle);
     }
@@ -119,7 +120,8 @@
     // Function to move and draw obstacles
     function moveObstacles() {
       for (let i = 0; i < obstacles.length; i++) {
-        obstacles[i].x -= obstacles[i].speed;  // Move the obstacle to the left
+        obstacles[i].y += obstacles[i].speed;  // Move the obstacle down
+
         ctx.fillStyle = obstacles[i].color;
         ctx.fillRect(obstacles[i].x, obstacles[i].y, obstacles[i].width, obstacles[i].height);
 
@@ -128,28 +130,31 @@
             player.x + player.width > obstacles[i].x &&
             player.y < obstacles[i].y + obstacles[i].height &&
             player.y + player.height > obstacles[i].y) {
-          // If there is a collision, reset the game
           alert("You hit an obstacle! Try again.");
-          resetGame();  // Function to reset the game
+          resetGame();  // Reset the game if collision happens
         }
       }
     }
 
     // Function to periodically create obstacles
-    setInterval(createObstacle, 2000);  // Create a new obstacle every 2 seconds
+    setInterval(createObstacle, 2000);  // Every 2 seconds
 
-    // Call the move function to keep the obstacles moving
+    // Function to reset the game
+    function resetGame() {
+      player.x = 100;
+      player.y = 100;
+      obstacles = [];  // Remove obstacles after reset
+    }
+
+    // Main game loop
     function gameLoop() {
-      drawPlayer();  // Draw player on the canvas
-      moveObstacles();  // Move obstacles
-      requestAnimationFrame(gameLoop);  // Request the next frame
+      drawPlayer();  // Draw the player on the canvas
+      moveObstacles();  // Move and display obstacles
+      requestAnimationFrame(gameLoop);  // Keep the game running
     }
 
     gameLoop();  // Start the game loop
   </script>
-
-</body>
-</html>
 
 </body>
 </html>
