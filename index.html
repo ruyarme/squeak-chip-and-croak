@@ -9,7 +9,7 @@
     canvas { display: block; margin: 0 auto; background-color: #f0f0f0; }
     #game-info { text-align: center; margin-top: 20px; font-size: 18px; }
   </style>
-</head>I’m i
+</head>
 <body>
 
   <h1 align="center">Squeak, Chip, and Croak's Alien Adventure</h1>
@@ -25,13 +25,13 @@
       y: 100,
       width: 50,
       height: 50,
-      color: 'green',  // Modify based on character selected (Squeak, Chip, or Croak)
+      color: 'green',  // Default to Croak's color (green)
       speed: 5,
-      name: "Squeak",  // Track which character is active
+      name: "Squeak",  // Starting character
       facts: [],
     };
 
-    // Add Science facts
+    // Science facts
     const scienceFacts = [
       "The alien forest plants use a unique process of photosynthesis that works with UV light!",
       "The crystal caverns are made of rare minerals that can glow in the dark!",
@@ -39,18 +39,30 @@
       "Stars on this planet have much stronger gravitational fields, affecting time perception!"
     ];
 
+    // Function to display the player's current name and a fact
+    function displayFact(fact) {
+      ctx.fillStyle = 'black';  // Text color
+      ctx.font = '16px Arial';  // Font style
+      ctx.fillText("Current Character: " + player.name, 20, 30);  // Display character name
+      ctx.fillText(fact, 20, canvas.height - 20);  // Display the science fact
+    }
+
+    // Change the player's color based on character name
+    function setCharacterAppearance() {
+      if (player.name === "Squeak") {
+        player.color = 'gray';  // Mouse character
+      } else if (player.name === "Chip") {
+        player.color = 'brown';  // Chipmunk character
+      } else if (player.name === "Croak") {
+        player.color = 'green';  // Frog character
+      }
+    }
+
     // Draw the player
     function drawPlayer() {
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
       ctx.fillStyle = player.color;
       ctx.fillRect(player.x, player.y, player.width, player.height);
-    }
-
-    // Function to display science facts
-    function displayFact(fact) {
-      ctx.fillStyle = 'black';
-      ctx.font = '16px Arial';
-      ctx.fillText(fact, 20, canvas.height - 20);
     }
 
     // Movement function
@@ -74,6 +86,7 @@
       }
       
       drawPlayer();
+      setCharacterAppearance(); // Update the player's appearance each frame
     });
 
     // Game loop to update visuals
