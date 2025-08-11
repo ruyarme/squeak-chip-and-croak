@@ -39,12 +39,24 @@
       "Stars on this planet have much stronger gravitational fields, affecting time perception!"
     ];
 
-    // Function to display the player's current name and a fact
+    // Variables to control the scrolling speed and positioning of the fact
+    let factYPosition = canvas.height - 50;  // Initial position of the fact
+    let factSpeed = 1;  // How fast the fact scrolls up
+
+    // Display science facts that stay on the screen for longer
     function displayFact(fact) {
       ctx.fillStyle = 'black';  // Text color
       ctx.font = '16px Arial';  // Font style
       ctx.fillText("Current Character: " + player.name, 20, 30);  // Display character name
-      ctx.fillText(fact, 20, canvas.height - 20);  // Display the science fact
+      ctx.fillText(fact, 20, factYPosition);  // Display the science fact at current position
+
+      // Move the fact upwards, but keep it in view
+      factYPosition -= factSpeed;
+
+      // Reset position when the fact goes off the screen
+      if (factYPosition < 0) {
+        factYPosition = canvas.height - 50;  // Reset to the bottom
+      }
     }
 
     // Function to update character's appearance based on the character name
@@ -89,14 +101,55 @@
       setCharacterAppearance();  // Update the player's appearance
     });
 
-    // Game loop to keep updating the canvas
+    // Create obstacles (randomly positioned)
+    let obstacles = [];
+
+    function createObstacle() {
+      let obstacle = {
+        x: canvas.width,
+        y: canvas.height - 100,  // Position the obstacle near the ground
+        width: 50,
+        height: 50,
+        color: 'red',
+        speed: 3  // Obstacle moves from right to left
+      };
+      obstacles.push(obstacle);
+    }
+
+    // Function to move and draw obstacles
+    function moveObstacles() {
+      for (let i = 0; i < obstacles.length; i++) {
+        obstacles[i].x -= obstacles[i].speed;  // Move the obstacle to the left
+        ctx.fillStyle = obstacles[i].color;
+        ctx.fillRect(obstacles[i].x, obstacles[i].y, obstacles[i].width, obstacles[i].height);
+
+        // Check for collision with the player
+        if (player.x < obstacles[i].x + obstacles[i].width &&
+            player.x + player.width > obstacles[i].x &&
+            player.y < obstacles[i].y + obstacles[i].height &&
+            player.y + player.height > obstacles[i].y) {
+          // If there is a collision, reset the game
+          alert("You hit an obstacle! Try again.");
+          resetGame();  // Function to reset the game
+        }
+      }
+    }
+
+    // Function to periodically create obstacles
+    setInterval(createObstacle, 2000);  // Create a new obstacle every 2 seconds
+
+    // Call the move function to keep the obstacles moving
     function gameLoop() {
       drawPlayer();  // Draw player on the canvas
+      moveObstacles();  // Move obstacles
       requestAnimationFrame(gameLoop);  // Request the next frame
     }
 
     gameLoop();  // Start the game loop
   </script>
+
+</body>
+</html>
 
 </body>
 </html>
