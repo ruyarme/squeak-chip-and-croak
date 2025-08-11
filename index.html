@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Squeak, Chip, and Croak's Alien Adventure</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    canvas { display: block; margin: 0 auto; background-color: #f0f0f0; }
+    #game-info { text-align: center; margin-top: 20px; font-size: 18px; }
+  </style>
+</head>I’m i
+<body>
+
+  <h1 align="center">Squeak, Chip, and Croak's Alien Adventure</h1>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="game-info">Press arrow keys to move the characters!</div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let player = {
+      x: 100,
+      y: 100,
+      width: 50,
+      height: 50,
+      color: 'green',  // Modify based on character selected (Squeak, Chip, or Croak)
+      speed: 5,
+      name: "Squeak",  // Track which character is active
+      facts: [],
+    };
+
+    // Add Science facts
+    const scienceFacts = [
+      "The alien forest plants use a unique process of photosynthesis that works with UV light!",
+      "The crystal caverns are made of rare minerals that can glow in the dark!",
+      "Water here behaves differently in zero gravity, creating floating bubbles!",
+      "Stars on this planet have much stronger gravitational fields, affecting time perception!"
+    ];
+
+    // Draw the player
+    function drawPlayer() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    // Function to display science facts
+    function displayFact(fact) {
+      ctx.fillStyle = 'black';
+      ctx.font = '16px Arial';
+      ctx.fillText(fact, 20, canvas.height - 20);
+    }
+
+    // Movement function
+    function movePlayer(direction) {
+      if (direction === 'left') player.x -= player.speed;
+      if (direction === 'right') player.x += player.speed;
+      if (direction === 'up') player.y -= player.speed;
+      if (direction === 'down') player.y += player.speed;
+    }
+
+    // Event listener for keydown (for movement)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') movePlayer('left');
+      if (e.key === 'ArrowRight') movePlayer('right');
+      if (e.key === 'ArrowUp') movePlayer('up');
+      if (e.key === 'ArrowDown') movePlayer('down');
+      
+      // Trigger Science fact when player reaches a certain point (e.g., near the top of the screen)
+      if (player.y < 50) {
+        displayFact(scienceFacts[Math.floor(Math.random() * scienceFacts.length)]);
+      }
+      
+      drawPlayer();
+    });
+
+    // Game loop to update visuals
+    function gameLoop() {
+      drawPlayer();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+
+</body>
+</html>
