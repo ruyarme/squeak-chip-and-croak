@@ -25,7 +25,7 @@
       y: 100,
       width: 50,
       height: 50,
-      color: 'green',  // Default to Croak's color (green)
+      color: 'gray',  // Default color for Squeak
       speed: 5,
       name: "Squeak",  // Starting character
       facts: [],
@@ -47,30 +47,35 @@
       ctx.fillText(fact, 20, canvas.height - 20);  // Display the science fact
     }
 
-    // Change the player's color based on character name
+    // Function to update character's appearance based on the character name
     function setCharacterAppearance() {
       if (player.name === "Squeak") {
-        player.color = 'gray';  // Mouse character
+        player.color = 'gray';  // Mouse character (Squeak)
       } else if (player.name === "Chip") {
-        player.color = 'brown';  // Chipmunk character
+        player.color = 'brown';  // Chipmunk character (Chip)
       } else if (player.name === "Croak") {
-        player.color = 'green';  // Frog character
+        player.color = 'green';  // Frog character (Croak)
       }
     }
 
-    // Draw the player
+    // Function to draw the player on the canvas
     function drawPlayer() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-      ctx.fillStyle = player.color;
-      ctx.fillRect(player.x, player.y, player.width, player.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before drawing the next frame
+      ctx.fillStyle = player.color;  // Use character's color
+      ctx.fillRect(player.x, player.y, player.width, player.height);  // Draw player as a rectangle
+
+      // Display a science fact when the player is near the top of the screen
+      if (player.y < 50) {
+        displayFact(scienceFacts[Math.floor(Math.random() * scienceFacts.length)]);
+      }
     }
 
-    // Movement function
+    // Movement function to keep the player on screen
     function movePlayer(direction) {
-      if (direction === 'left') player.x -= player.speed;
-      if (direction === 'right') player.x += player.speed;
-      if (direction === 'up') player.y -= player.speed;
-      if (direction === 'down') player.y += player.speed;
+      if (direction === 'left' && player.x > 0) player.x -= player.speed;  // Prevent going off the left
+      if (direction === 'right' && player.x + player.width < canvas.width) player.x += player.speed;  // Prevent going off the right
+      if (direction === 'up' && player.y > 0) player.y -= player.speed;  // Prevent going off the top
+      if (direction === 'down' && player.y + player.height < canvas.height) player.y += player.speed;  // Prevent going off the bottom
     }
 
     // Event listener for keydown (for movement)
@@ -79,23 +84,18 @@
       if (e.key === 'ArrowRight') movePlayer('right');
       if (e.key === 'ArrowUp') movePlayer('up');
       if (e.key === 'ArrowDown') movePlayer('down');
-      
-      // Trigger Science fact when player reaches a certain point (e.g., near the top of the screen)
-      if (player.y < 50) {
-        displayFact(scienceFacts[Math.floor(Math.random() * scienceFacts.length)]);
-      }
-      
-      drawPlayer();
-      setCharacterAppearance(); // Update the player's appearance each frame
+
+      drawPlayer();  // Redraw the player after movement
+      setCharacterAppearance();  // Update the player's appearance
     });
 
-    // Game loop to update visuals
+    // Game loop to keep updating the canvas
     function gameLoop() {
-      drawPlayer();
-      requestAnimationFrame(gameLoop);
+      drawPlayer();  // Draw player on the canvas
+      requestAnimationFrame(gameLoop);  // Request the next frame
     }
 
-    gameLoop();
+    gameLoop();  // Start the game loop
   </script>
 
 </body>
